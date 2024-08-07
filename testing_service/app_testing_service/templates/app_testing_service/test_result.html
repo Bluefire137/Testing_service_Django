@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Test Result</title>
+</head>
+<body>
+<div class="container">
+    <h1>Результаты теста</h1>
+    <p>Тест: {{ test.name }}</p>
+    <p>Результат: {{ score }}%</p>
+    <p>Количество правильных ответов: {{total_correct_answers}} из {{total_questions}} </p>
+    <a href="{% url 'take_test' test.id %}">Пройти тест снова</a>
+    <a href="{% url 'test_list' %}">Вернуться к списку тестов</a>
+
+</div>
+</body>
+</html>

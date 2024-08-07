@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Прохождение теста</title>
+</head>
+<body>
+    <div class="container">
+        <h2>{{ question.text }}</h2>
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit">Ответить</button>
+        </form>
+        <div>
+            <br>
+            {% if previous_question_id %}
+                <a href="{% url 'take_test' test.id previous_question_id %}">Предыдущий вопрос</a>
+            {% endif %}
+            {% if next_question_id %}
+            <br>
+                <a href="{% url 'take_test' test.id next_question_id %}">Следующий вопрос</a>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>
