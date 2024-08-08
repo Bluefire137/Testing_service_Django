@@ -6,7 +6,7 @@
 </head>
 <body>
     <h1>Результаты теста: {{ test.name }}</h1>
-    <p>Количество правильных ответов: {{ total_possible_correct_answers }}</p>
+    <p>Количество правильных ответов: {{ total_correct_questions }} из {{ total_questions }}</p>
     <p>Процент правильных ответов: {{ score }}%</p>
     <a href="{% url 'take_test' test.id %}">Пройти тест снова</a>
     <a href="{% url 'test_list' %}">Вернуться к списку тестов</a>

@@ -9,7 +9,7 @@
     <ul>
         {% for test in tests %}
                 <li>
-                    <a href="{% url 'take_test' test.id %}">{{ test.name }}</a>
+                    <a href="{% url 'test_result' test.id %}">{{ test.name }}</a>
                 </li>
         {% empty %}
             <li>Нет доступных тестов.</li>

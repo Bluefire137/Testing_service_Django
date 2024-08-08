@@ -1,3 +1,4 @@
+from django.contrib.postgres.fields import ArrayField
 from django.db import models
 from django.contrib.auth.models import User
 
@@ -27,11 +28,13 @@ class Answer(models.Model):
 class UserTestResult(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     test = models.ForeignKey(Test, on_delete=models.CASCADE)
+    total_correct_questions = models.IntegerField()
     score = models.FloatField()
     created_at = models.DateTimeField(auto_now_add=True)
 
 class UserAnswer(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     question = models.ForeignKey(Question, on_delete=models.CASCADE)
+    test = models.ForeignKey(Test, on_delete=models.CASCADE)
     selected_answers = models.ManyToManyField(Answer)
     is_correct = models.BooleanField(default=False)

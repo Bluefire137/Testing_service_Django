@@ -43,52 +43,59 @@ def user_login(request):
 @login_required
 def take_test(request, test_id, question_id=None):
     test = get_object_or_404(Test, id=test_id, is_active=True)
-    questions = list(test.questions.filter(is_active=True).order_by('id'))
+    user_test_results = UserTestResult.objects.filter(user=request.user, test=test)
+    if user_test_results:
+        user_test_results.delete()
+        UserAnswer.objects.filter(user=request.user, test=test).delete()
 
+    user_questions_ids = UserAnswer.objects.filter(user=request.user, test=test).values_list('question__id', flat=True)
+    all_questions = list(test.questions.filter(is_active=True).order_by('id'))
+
+    # Отфильтровываем вопросы, которые уже есть в user_questions_ids
+    access_questions = [question for question in all_questions if question.id not in user_questions_ids]
+
+    # Проверка наличия вопроса
     if question_id:
         question = get_object_or_404(Question, id=question_id)
-        if question not in questions:
-            return redirect('take_test', test_id=test.id, question_id=questions[0].id)
+        if question not in access_questions:
+            return redirect('take_test', test_id=test.id, question_id=access_questions[0].id)
     else:
-        question = questions[0]
+        question = access_questions[0]
 
-    current_index = questions.index(question)
-    previous_question_id = questions[current_index - 1].id if current_index > 0 else None
-    next_question_id = questions[current_index + 1].id if current_index < len(questions) - 1 else None
+    # Определяем предыдущий и следующий вопросы
+    current_index = access_questions.index(question)
+    previous_question_id = access_questions[current_index - 1].id if current_index > 0 else None
+    next_question_id = access_questions[current_index + 1].id if current_index < len(access_questions) - 1 else None
 
     if request.method == 'POST':
         form = TakeTestForm(request.POST, question=question)
         if form.is_valid():
             selected_answers = form.cleaned_data['ответы']
             correct_answers = question.answers.filter(is_correct=True)
-
             is_correct = set(selected_answers) == set(correct_answers)
 
             user_answer = UserAnswer.objects.create(
                 user=request.user,
                 question=question,
+                test=test,
                 is_correct=is_correct,
             )
             user_answer.selected_answers.set(selected_answers)
 
+            # Проверяем, есть ли еще вопросы
+            user_answers = UserAnswer.objects.filter(user=request.user, test=test).all()
+            remaining_questions = [q for q in all_questions if
+                                   q.id not in user_answers.values_list('question__id', flat=True)]
+
             if next_question_id:
                 return redirect('take_test', test_id=test.id, question_id=next_question_id)
+            elif remaining_questions:
+                # Если есть вопросы, на которые не дан ответ, редирект на первый из них
+                return redirect('take_test', test_id=test.id, question_id=remaining_questions[0].id)
             else:
-                total_correct_answers = 0
-                total_possible_correct_answers = 0
-
-                for question in questions:
-                    correct_answers = question.answers.filter(is_correct=True)
-                    total_possible_correct_answers += correct_answers.count()
-                    user_answers = UserAnswer.objects.filter(user=request.user, question=question)
-                    if user_answers.exists():
-                        selected_answers = user_answers.first().selected_answers.all()
-                        if set(selected_answers) == set(correct_answers):
-                            total_correct_answers += correct_answers.count()
-
-                score = (total_correct_answers / total_possible_correct_answers) * 100
-                UserTestResult.objects.create(user=request.user, test=test, score=score)
+                update_test_result(request.user, test.id)
                 return redirect('test_result', test_id=test.id)
+
     else:
         form = TakeTestForm(question=question)
 
@@ -101,24 +108,38 @@ def take_test(request, test_id, question_id=None):
     }
     return render(request, 'app_testing_service/take_test.html', context)
 
-
 @login_required
 def test_result(request, test_id):
     test = get_object_or_404(Test, id=test_id, is_active=True)
-    user_test_results = UserTestResult.objects.filter(user=request.user, test=test).order_by('-created_at')
+    user_test_results = UserTestResult.objects.filter(user=request.user, test=test)
 
-    if user_test_results.exists():
-        test_result = user_test_results.first()
-    else:
-        return redirect('test_list')
-
-    total_correct_answers = UserAnswer.objects.filter(user=request.user, question__test=test, is_correct=True).count()
-    total_possible_correct_answers = sum(q.answers.filter(is_correct=True).count() for q in test.questions.all())
+    if not user_test_results.exists():
+        return redirect('take_test', test_id=test.id)
+    # Получите результаты теста
+    test_result = user_test_results.first()
+    total_questions = test.questions.all().count()
 
     context = {
         'test': test,
         'score': test_result.score,
-        'total_correct_answers': total_correct_answers,
-        'total_possible_correct_answers': total_possible_correct_answers,
+        'total_correct_questions': test_result.total_correct_questions,
+        'total_questions': total_questions,
     }
     return render(request, 'app_testing_service/test_result.html', context)
+
+def update_test_result(user, test_id):
+    test = get_object_or_404(Test, id=test_id, is_active=True)
+    total_correct_questions = 0
+    total_questions = test.questions.all().count()
+
+    for question in test.questions.all():
+        correct_answers = question.answers.filter(is_correct=True).values_list('id', flat=True)
+        user_answer = UserAnswer.objects.filter(user=user, question=question).first()
+        selected_answers_ids = user_answer.selected_answers.values_list('id', flat=True)
+        if set(selected_answers_ids) == set(correct_answers):
+            total_correct_questions += 1
+
+    score = round((total_correct_questions / total_questions) * 100 if total_questions > 0 else 0, 2)
+
+    UserTestResult.objects.create(user=user, test=test, score=score, total_correct_questions=total_correct_questions)
+
