@@ -1,9 +1,20 @@
 from django.contrib.auth.forms import AuthenticationForm
+from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login, authenticate
 from .models import Test, Question, Answer, UserTestResult, UserAnswer
 from .forms import SignUpForm, TakeTestForm
 from django.contrib.auth.decorators import login_required
+from django.urls import reverse
+
+
+def home_redirect(request):
+    return HttpResponseRedirect(reverse('test_list'))
+
+
+def test_list(request):
+    tests = Test.objects.filter(is_active=True)
+    return render(request, 'app_testing_service/test_list.html', {'tests': tests})
 
 
 def signup(request):
@@ -17,6 +28,7 @@ def signup(request):
         form = SignUpForm()
     return render(request, 'app_testing_service/signup.html', {'form': form})
 
+
 def user_login(request):
     if request.method == 'POST':
         form = AuthenticationForm(request, data=request.POST)
@@ -27,12 +39,6 @@ def user_login(request):
     else:
         form = AuthenticationForm()
     return render(request, 'app_testing_service/login.html', {'form': form})
-
-@login_required
-def test_list(request):
-    tests = Test.objects.filter(is_active=True)
-    return render(request, 'app_testing_service/test_list.html', {'tests': tests})
-
 
 @login_required
 def take_test(request, test_id, question_id=None):
@@ -104,32 +110,15 @@ def test_result(request, test_id):
     if user_test_results.exists():
         test_result = user_test_results.first()
     else:
-        return redirect('test_list')  # Или другое действие, если результатов нет
+        return redirect('test_list')
 
-    total_correct_answers = 0
-    total_questions = test.questions.count()
-
-    # Проходим по всем вопросам теста
-    for question in test.questions.all():
-        # Получаем правильные ответы для текущего вопроса
-        correct_answers_ids = set(question.answers.filter(is_correct=True).values_list('id', flat=True))
-        user_answer = UserAnswer.objects.filter(user=request.user, question=question).first()
-
-        if user_answer:
-            # Получаем ответы пользователя для текущего вопроса
-            selected_answers_ids = set(user_answer.selected_answers.values_list('id', flat=True))
-
-            # Проверяем, совпадают ли все выбранные пользователем ответы с правильными
-            if selected_answers_ids == correct_answers_ids:
-                total_correct_answers += 1  # Увеличиваем счетчик за правильный вопрос
-
-    # Вычисляем итоговый балл
-    score = (total_correct_answers / total_questions) * 100 if total_questions > 0 else 0
+    total_correct_answers = UserAnswer.objects.filter(user=request.user, question__test=test, is_correct=True).count()
+    total_possible_correct_answers = sum(q.answers.filter(is_correct=True).count() for q in test.questions.all())
 
     context = {
         'test': test,
-        'score': score,
+        'score': test_result.score,
         'total_correct_answers': total_correct_answers,
-        'total_questions': total_questions,
+        'total_possible_correct_answers': total_possible_correct_answers,
     }
     return render(request, 'app_testing_service/test_result.html', context)

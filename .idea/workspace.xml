@@ -4,35 +4,14 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="020b32d0-8431-424f-92b6-412a1da6ad6e" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/Testing_Service.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/profiles_settings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/testing_service/app_testing_service/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/testing_service/app_testing_service/admin.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/testing_service/app_testing_service/apps.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/testing_service/app_testing_service/forms.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/testing_service/app_testing_service/migrations/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/testing_service/app_testing_service/models.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/testing_service/app_testing_service/templates/app_testing_service/base.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/testing_service/app_testing_service/templates/app_testing_service/login.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/testing_service/app_testing_service/templates/app_testing_service/signup.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/testing_service/app_testing_service/templates/app_testing_service/take_test.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/testing_service/app_testing_service/templates/app_testing_service/test_list.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/testing_service/app_testing_service/templates/app_testing_service/test_result.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/testing_service/app_testing_service/tests.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/testing_service/app_testing_service/urls.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/testing_service/app_testing_service/views.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/testing_service/manage.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/testing_service/testing_service/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/testing_service/testing_service/asgi.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/testing_service/testing_service/settings.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/testing_service/testing_service/urls.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/testing_service/testing_service/wsgi.py" afterDir="false" />
+    <list default="true" id="020b32d0-8431-424f-92b6-412a1da6ad6e" name="Changes" comment="First stable version">
+      <change afterPath="$PROJECT_DIR$/testing_service/app_testing_service/templates/app_testing_service/test_list_blank.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/testing_service/app_testing_service/templates/app_testing_service/test_list.html" beforeDir="false" afterPath="$PROJECT_DIR$/testing_service/app_testing_service/templates/app_testing_service/test_list.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/testing_service/app_testing_service/templates/app_testing_service/test_result.html" beforeDir="false" afterPath="$PROJECT_DIR$/testing_service/app_testing_service/templates/app_testing_service/test_result.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/testing_service/app_testing_service/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/testing_service/app_testing_service/urls.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/testing_service/app_testing_service/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/testing_service/app_testing_service/views.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/testing_service/testing_service/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/testing_service/testing_service/settings.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -47,6 +26,13 @@
       </list>
     </option>
   </component>
+  <component name="Git.Pull.Settings">
+    <option name="OPTIONS">
+      <set>
+        <option value="REBASE" />
+      </set>
+    </option>
+  </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
@@ -59,14 +45,14 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "DefaultHtmlFileTemplate": "HTML File",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "ignore.virus.scanning.warn.message": "true",
-    "settings.editor.selected.configurable": "editing.templates"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;DefaultHtmlFileTemplate&quot;: &quot;HTML File&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;editing.templates&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\Users\sinee\PycharmProjects\Testing_Service\testing_service\app_testing_service\templates\app_testing_service" />
@@ -113,7 +99,31 @@
       <option name="presentableId" value="Default" />
       <updated>1722879667854</updated>
     </task>
+    <task id="LOCAL-00001" summary="First stable version">
+      <option name="closed" value="true" />
+      <created>1723053679049</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1723053679049</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="First stable version" />
+    <option name="LAST_COMMIT_MESSAGE" value="First stable version" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

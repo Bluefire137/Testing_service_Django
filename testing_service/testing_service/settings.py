@@ -54,7 +54,8 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'testing_service.urls'
 
-
+LOGIN_URL = 'login'
+LOGOUT_REDIRECT_URL = 'test_list'
 
 TEMPLATES = [
     {

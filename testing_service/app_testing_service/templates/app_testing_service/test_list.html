@@ -2,18 +2,25 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Список тестов</title>
+    <title>Доступные тесты</title>
 </head>
 <body>
-    <div class="container">
-        <h2>Доступные тесты</h2>
-        <ul>
-            {% for test in tests %}
+    <h1>Список тестов</h1>
+    <ul>
+        {% for test in tests %}
                 <li>
                     <a href="{% url 'take_test' test.id %}">{{ test.name }}</a>
                 </li>
-            {% endfor %}
-        </ul>
-    </div>
+        {% empty %}
+            <li>Нет доступных тестов.</li>
+        {% endfor %}
+    </ul>
+    {% if user.is_authenticated %}
+        <p>Вы вошли как {{ user.username }}.
+        <form method="post" action="{% url 'logout' %}">
+            {% csrf_token %}
+            <button type="submit">Выйти</button>
+        </form>
+    {% endif %}
 </body>
 </html>

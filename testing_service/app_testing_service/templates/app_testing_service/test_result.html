@@ -2,17 +2,22 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Test Result</title>
+    <title>Результаты теста</title>
 </head>
 <body>
-<div class="container">
-    <h1>Результаты теста</h1>
-    <p>Тест: {{ test.name }}</p>
-    <p>Результат: {{ score }}%</p>
-    <p>Количество правильных ответов: {{total_correct_answers}} из {{total_questions}} </p>
+    <h1>Результаты теста: {{ test.name }}</h1>
+    <p>Количество правильных ответов: {{ total_possible_correct_answers }}</p>
+    <p>Процент правильных ответов: {{ score }}%</p>
     <a href="{% url 'take_test' test.id %}">Пройти тест снова</a>
     <a href="{% url 'test_list' %}">Вернуться к списку тестов</a>
+    {% if user.is_authenticated %}
+        <p>Вы вошли как {{ user.username }}.
 
-</div>
+    <form method="post" action="{% url 'logout' %}">
+            {% csrf_token %}
+            <button type="submit">Выйти</button>
+        </form>
+
+    {% endif %}
 </body>
 </html>
