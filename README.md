@@ -1,1 +1,3 @@
-# Testing_service_Django
+TESTING_SERVICE
+
+# Just run docker-compose up --build

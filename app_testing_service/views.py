@@ -1,11 +1,12 @@
+from django.contrib.auth import login
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import AuthenticationForm
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth import login, authenticate
-from .models import Test, Question, Answer, UserTestResult, UserAnswer
-from .forms import SignUpForm, TakeTestForm
-from django.contrib.auth.decorators import login_required
 from django.urls import reverse
+
+from .forms import SignUpForm, TakeTestForm
+from .models import Test, Question, UserTestResult, UserAnswer
 
 
 def home_redirect(request):
@@ -40,6 +41,7 @@ def user_login(request):
         form = AuthenticationForm()
     return render(request, 'app_testing_service/login.html', {'form': form})
 
+
 @login_required
 def take_test(request, test_id, question_id=None):
     test = get_object_or_404(Test, id=test_id, is_active=True)
@@ -50,11 +52,8 @@ def take_test(request, test_id, question_id=None):
 
     user_questions_ids = UserAnswer.objects.filter(user=request.user, test=test).values_list('question__id', flat=True)
     all_questions = list(test.questions.filter(is_active=True).order_by('id'))
-
-    # Отфильтровываем вопросы, которые уже есть в user_questions_ids
     access_questions = [question for question in all_questions if question.id not in user_questions_ids]
 
-    # Проверка наличия вопроса
     if question_id:
         question = get_object_or_404(Question, id=question_id)
         if question not in access_questions:
@@ -62,7 +61,6 @@ def take_test(request, test_id, question_id=None):
     else:
         question = access_questions[0]
 
-    # Определяем предыдущий и следующий вопросы
     current_index = access_questions.index(question)
     previous_question_id = access_questions[current_index - 1].id if current_index > 0 else None
     next_question_id = access_questions[current_index + 1].id if current_index < len(access_questions) - 1 else None
@@ -82,7 +80,6 @@ def take_test(request, test_id, question_id=None):
             )
             user_answer.selected_answers.set(selected_answers)
 
-            # Проверяем, есть ли еще вопросы
             user_answers = UserAnswer.objects.filter(user=request.user, test=test).all()
             remaining_questions = [q for q in all_questions if
                                    q.id not in user_answers.values_list('question__id', flat=True)]
@@ -90,7 +87,6 @@ def take_test(request, test_id, question_id=None):
             if next_question_id:
                 return redirect('take_test', test_id=test.id, question_id=next_question_id)
             elif remaining_questions:
-                # Если есть вопросы, на которые не дан ответ, редирект на первый из них
                 return redirect('take_test', test_id=test.id, question_id=remaining_questions[0].id)
             else:
                 update_test_result(request.user, test.id)
@@ -108,6 +104,7 @@ def take_test(request, test_id, question_id=None):
     }
     return render(request, 'app_testing_service/take_test.html', context)
 
+
 @login_required
 def test_result(request, test_id):
     test = get_object_or_404(Test, id=test_id, is_active=True)
@@ -115,7 +112,6 @@ def test_result(request, test_id):
 
     if not user_test_results.exists():
         return redirect('take_test', test_id=test.id)
-    # Получите результаты теста
     test_result = user_test_results.first()
     total_questions = test.questions.all().count()
 
@@ -126,6 +122,7 @@ def test_result(request, test_id):
         'total_questions': total_questions,
     }
     return render(request, 'app_testing_service/test_result.html', context)
+
 
 def update_test_result(user, test_id):
     test = get_object_or_404(Test, id=test_id, is_active=True)
@@ -142,4 +139,3 @@ def update_test_result(user, test_id):
     score = round((total_correct_questions / total_questions) * 100 if total_questions > 0 else 0, 2)
 
     UserTestResult.objects.create(user=user, test=test, score=score, total_correct_questions=total_correct_questions)
-
