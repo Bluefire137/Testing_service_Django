@@ -77,5 +77,7 @@
 
 # Запуск
 git clone https://github.com/Bluefire137/Testing_service_Django.git
+
 cd Testing_service_Django
+
 docker-compose up --build
