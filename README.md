@@ -76,4 +76,6 @@
   При запуске приложения создать пользователя для входа в админку admin/password
 
 # Запуск
-Для запуска достаточно: docker-compose up --build
+git clone https://github.com/Bluefire137/Testing_service_Django.git
+cd Testing_service_Django
+docker-compose up --build
